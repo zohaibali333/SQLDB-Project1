@@ -148,7 +148,7 @@ INSERT INTO Addresses (UserID, Street, City, State, ZipCode, Country) VALUES
 (3, '123 Block C', 'Lahore', 'Punjab', '10003', 'Pakistan');
 
 
--- 15 Queries by Abdur Rauf
+-- 15 Queries by Abdur Rauf (255)
 SELECT u.* FROM Users u
 LEFT JOIN Orders o ON u.UserID = o.UserID
 WHERE o.OrderID IS NULL;
@@ -220,4 +220,74 @@ SELECT p.ProductName, r.Rating, r.ReviewText
 FROM Reviews r
 JOIN Products p ON r.ProductID = p.ProductID
 WHERE r.UserID = 1;
+
+-- 15 Queries by Zohaib Ali (139)
+
+
+SELECT p.ProductName
+FROM Products p
+LEFT JOIN Reviews r ON p.ProductID = r.ProductID
+WHERE r.ReviewID IS NULL;
+
+
+SELECT p.ProductName
+FROM Products p
+LEFT JOIN OrderDetails od ON p.ProductID = od.ProductID
+WHERE od.OrderDetailID IS NULL;
+
+SELECT p.ProductName, SUM(od.Quantity) AS TotalQuantitySold
+FROM Products p
+JOIN OrderDetails od ON p.ProductID = od.ProductID
+GROUP BY p.ProductName;
+
+SELECT p.ProductName, AVG(r.Rating) AS AverageRating
+FROM Products p
+JOIN Reviews r ON p.ProductID = r.ProductID
+GROUP BY p.ProductName;
+
+SELECT ProductName
+FROM Products
+WHERE Stock = 0;
+
+SELECT DISTINCT s.SupplierName
+FROM Suppliers s
+JOIN ProductSuppliers ps ON s.SupplierID = ps.SupplierID
+JOIN Products p ON ps.ProductID = p.ProductID
+WHERE p.Price > 5000;
+
+SELECT c.CategoryName, AVG(p.Price) AS AveragePrice
+FROM Categories c
+JOIN Products p ON c.CategoryID = p.CategoryID
+GROUP BY c.CategoryName;
+
+SELECT p.ProductName, s.SupplierName, s.ContactEmail, s.Phone
+FROM Products p
+JOIN ProductSuppliers ps ON p.ProductID = ps.ProductID
+JOIN Suppliers s ON ps.SupplierID = s.SupplierID;
+
+SELECT c.CategoryName, COUNT(p.ProductID) AS ProductsInStock
+FROM Categories c
+JOIN Products p ON c.CategoryID = c.CategoryID
+WHERE p.Stock > 0
+GROUP BY c.CategoryName;
+
+SELECT COUNT(*) AS TotalOrders FROM Orders;
+SELECT AVG(TotalAmount) AS AverageOrderAmount FROM Orders;
+
+
+SELECT * FROM Products ORDER BY Price DESC LIMIT 1;
+SELECT * FROM Orders ORDER BY TotalAmount DESC LIMIT 5;
+
+SELECT COUNT(DISTINCT UserID) AS DistinctUsersWithOrders
+FROM Orders;
+
+SELECT u.Username, o.OrderDate, o.TotalAmount
+FROM Users u
+JOIN Orders o ON u.UserID = o.UserID
+WHERE o.OrderDate = (
+    SELECT MAX(o2.OrderDate)
+    FROM Orders o2
+    WHERE o2.UserID = o.UserID
+);
+
 
